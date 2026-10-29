@@ -1,0 +1,11 @@
+District_ID,District_Name,Population,Hospital_Beds,Neighbors,Rainfall_Level,Mosquito_Index,Reported_Cases,Mobility_Level,Baseline_Risk,Spraying_Cost,Testing_Cost
+D01,Central Downtown,125000,120,"D02,D03,D05",Low,0.42,34,High,Low,1500,300
+D02,Riverside Slums,98000,45,"D01,D04,D06",High,0.88,112,High,High,1000,500
+D03,North Hill,64000,50,"D01,D05,D07",High,0.31,18,Low,Low,1200,300
+D04,East Marshlands,82000,40,"D02,D06,D08",High,0.95,145,Medium,High,1000,300
+D05,Greenfield Suburbs,110000,80,"D01,D03,D09",Low,0.25,12,Medium,Low,1500,300
+D06,Industrial Park,53000,30,"D02,D04,D10",Low,0.38,22,High,Low,1500,500
+D07,West End Valley,76000,60,"D03,D08,D09",High,0.72,67,Low,Low,1500,300
+D08,Lakeview Basin,89000,55,"D04,D07,D10",High,0.84,89,High,High,1500,400
+D09,Old Town Heritage,105000,70,"D05,D07,D10",Low,0.45,41,High,Low,1000,300
+D10,Harbor Port Area,91000,50,"D06,D08,D09",High,0.79,76,High,High,1000,300

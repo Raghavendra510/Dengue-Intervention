@@ -1,0 +1,196 @@
+﻿##############################################################################
+#  AI COURSE PROJECT: ADAPTIVE DENGUE SURVEILLANCE & INTERVENTION COORDINATOR
+#  Group 9 - Mid-Evaluation Master Execution Suite
+##############################################################################
+
+>>> STEP 0: Generating / Verifying Synthetic Data (OpenDengue Compatible)...
+[OK] Created synthetic district data: D:\codes\projectzz\dengue intervention\Dengue-Intervention\data\districts_mock.csv (10 districts)
+[OK] Created synthetic timeseries data: D:\codes\projectzz\dengue intervention\Dengue-Intervention\data\weather_timeseries.csv (140 records)
+
+>>> STEP 1: Executing Module 1 (Search & CSP)...
+======================================================================
+MODULE 1: GRAPH SEARCH & CONSTRAINT SATISFACTION PROBLEM (CSP)
+======================================================================
+
+[PART 1: GRAPH SEARCH & CONTAGION CLUSTERING]
+Total Districts (Nodes): 10, Spatial Adjacencies (Edges): 15
+ -> BFS Outbreak Cluster from D02 (Riverside Slums): ['D02', 'D04', 'D08', 'D10']
+ -> Shortest Intervention Route (Dijkstra) from Depot D01 to Target D10: D01 -> D02 -> D06 -> D10
+
+[PART 2: CSP RESOURCE ALLOCATION SOLVER]
+Test Scenario A: Feasible Budget ($10,000, Max Teams = 8)
+ -> Total Feasible Solutions Found: 43
+ -> Sample Feasible Allocation (Teams: 8/8, Budget Used: $9000/$10000):
+    - District D01 (Low Risk,  34 cases): 0 teams assigned
+    - District D02 (High Risk, 112 cases): 2 teams assigned
+    - District D03 (Low Risk,  18 cases): 0 teams assigned
+    - District D04 (High Risk, 145 cases): 2 teams assigned
+    - District D05 (Low Risk,  12 cases): 0 teams assigned
+    - District D06 (Low Risk,  22 cases): 0 teams assigned
+    - District D07 (Low Risk,  67 cases): 0 teams assigned
+    - District D08 (High Risk,  89 cases): 2 teams assigned
+    - District D09 (Low Risk,  41 cases): 0 teams assigned
+    - District D10 (High Risk,  76 cases): 2 teams assigned
+
+Test Scenario B: Constraint Failure Demonstration (Unsatisfiable Budget $1,000)
+ -> Solutions Found with Budget $1000: 0
+ [OK] PASS: CSP correctly proved UNSATISFIABLE when resources violate minimum risk mandates.
+======================================================================
+
+>>> STEP 2: Executing Module 2 (Classical Planning)...
+======================================================================
+MODULE 2: CLASSICAL PLANNING (PDDL / STRIPS STATE-SPACE SEARCH)
+======================================================================
+
+[PLANNING PROBLEM DEFINITION]
+Initial State : ['Adjacent(D01, D02)', 'Adjacent(D02, D01)', 'Adjacent(D02, D04)', 'Adjacent(D04, D02)', 'At(Team_Alpha, D01)', 'Uninspected(D02)']
+Goal State    : ['Safe(D02)']
+
+[SOLVING SCENARIO 1: FEASIBLE INTERVENTION PIPELINE]
+ -> Optimal Plan Found (5 sequential steps):
+   Step 1: Move(Team_Alpha, D01, D02)
+   Step 2: InspectBreedingSites(Team_Alpha, D02)
+   Step 3: SprayLarvicide(Team_Alpha, D02)
+   Step 4: DeployMedicalTreatment(Team_Alpha, D02)
+   Step 5: CertifyZoneSafe(HQ, D02)
+ -> Final State satisfies goal: True
+
+[SOLVING SCENARIO 2: PRECONDITION VIOLATION / IMPOSSIBLE PLAN]
+Test: Attempting to spray D04 when road is severed (No Adjacency) and Site Not Inspected
+ [OK] PASS: Planner correctly identified UNREACHABLE goal state due to unmet preconditions.
+======================================================================
+
+>>> STEP 3: Executing Module 3 (Reasoning Under Uncertainty / Bayes Net)...
+======================================================================
+MODULE 3: REASONING UNDER UNCERTAINTY (BAYESIAN NETWORKS)
+======================================================================
+
+[BAYESIAN NETWORK TOPOLOGY]
+Nodes: ['Rainfall', 'Mosquito_Density', 'Dengue_Risk', 'Human_Mobility']
+Edges (Causal dependencies): [('Rainfall', 'Mosquito_Density'), ('Mosquito_Density', 'Dengue_Risk'), ('Human_Mobility', 'Dengue_Risk')]
+
+[CONDITIONAL PROBABILITY TABLES (CPTs)]
+
+--- CPD: P(Rainfall | None) ---
++----------------+-----+
+| Rainfall(Low)  | 0.6 |
++----------------+-----+
+| Rainfall(High) | 0.4 |
++----------------+-----+
+
+--- CPD: P(Human_Mobility | None) ---
++----------------------+-----+
+| Human_Mobility(Low)  | 0.5 |
++----------------------+-----+
+| Human_Mobility(High) | 0.5 |
++----------------------+-----+
+
+--- CPD: P(Mosquito_Density | Rainfall) ---
++------------------------+---------------+----------------+
+| Rainfall               | Rainfall(Low) | Rainfall(High) |
++------------------------+---------------+----------------+
+| Mosquito_Density(Low)  | 0.8           | 0.15           |
++------------------------+---------------+----------------+
+| Mosquito_Density(High) | 0.2           | 0.85           |
++------------------------+---------------+----------------+
+
+--- CPD: P(Dengue_Risk | Mosquito_Density, Human_Mobility) ---
++-------------------+-----+------------------------+
+| Mosquito_Density  | ... | Mosquito_Density(High) |
++-------------------+-----+------------------------+
+| Human_Mobility    | ... | Human_Mobility(High)   |
++-------------------+-----+------------------------+
+| Dengue_Risk(Low)  | ... | 0.1                    |
++-------------------+-----+------------------------+
+| Dengue_Risk(High) | ... | 0.9                    |
++-------------------+-----+------------------------+
+
+[EXACT INFERENCE EXPERIMENTS (Variable Elimination)]
+1. Prior Unconditional Risk: P(Dengue_Risk=High) = 0.4125
+2. Causal Forward Query   : P(Dengue_Risk=High | Rainfall=High) = 0.6562
+3. Extreme Threat Query   : P(Dengue_Risk=High | Rain=High, Mobility=High) = 0.7950
+4. Diagnostic Query       : P(Rainfall=High | Dengue_Risk=High) = 0.6364
+
+[VALIDATION OF BAYES RULE CONVERGENCE]
+ [OK] PASS: Posterior probabilities mathematically update monotonically under compounding risk.
+======================================================================
+
+>>> STEP 4: Executing Module 4 (Reinforcement Learning / Q-Learning)...
+======================================================================
+MODULE 4: REINFORCEMENT LEARNING (ADAPTIVE Q-LEARNING AGENT)
+======================================================================
+Training Q-Learning Agent across 800 episodes...
+
+[EMPIRICAL REWARD CONVERGENCE]
+Episode Window | Average Episode Reward | Exploration Epsilon
+-------------------------------------------------------
+Episodes   1-100  | Mean Reward:   -1.70    | Epsilon: 0.606
+Episodes 101-200  | Mean Reward:  100.45    | Epsilon: 0.367
+Episodes 201-300  | Mean Reward:  162.80    | Epsilon: 0.222
+Episodes 301-400  | Mean Reward:  195.25    | Epsilon: 0.135
+Episodes 401-500  | Mean Reward:  226.50    | Epsilon: 0.082
+Episodes 501-600  | Mean Reward:  230.40    | Epsilon: 0.050
+Episodes 601-700  | Mean Reward:  235.55    | Epsilon: 0.050
+Episodes 701-800  | Mean Reward:  238.95    | Epsilon: 0.050
+-------------------------------------------------------
+Initial 100-ep mean: -1.70 -> Final 100-ep mean: 238.95
+Performance Gain   : +240.65 reward units
+
+[SAMPLE OPTIMAL POLICY (Learned Q-Table Highlights)]
+ State (Zone=1, Risk=2, Chem=3):
+   -> Q-Values: [np.float64(3.17), np.float64(198.94), np.float64(58.48), np.float64(-4.91)] => Best Action: 1:SprayIntensive
+ State (Zone=1, Risk=2, Chem=0):
+   -> Q-Values: [np.float64(16.48), np.float64(-10.49), np.float64(-9.94), np.float64(-53.85)] => Best Action: 0:Move
+ State (Zone=0, Risk=0, Chem=2):
+   -> Q-Values: [np.float64(57.92), np.float64(46.26), np.float64(73.99), np.float64(59.91)] => Best Action: 2:FogContainment
+
+ [OK] PASS: Q-learning agent successfully converged to high-reward intervention policy.
+======================================================================
+
+>>> STEP 5: Executing Module 5 (GenAI Multi-Agent Coordinator)...
+======================================================================
+MODULE 5: GENERATIVE AI MULTI-AGENT COORDINATOR
+======================================================================
+
+--- AGENT 1: CENTRAL SURVEILLANCE COORDINATOR ---
+=== [CENTRAL COORDINATOR SITUATION DIRECTIVE - CODE RED] ===
+SURVEILLANCE SUMMARY: Active outbreak clusters detected in ['Riverside Slums (D02)', 'East Marshlands (D04)', 'Harbor Area (D10)'].
+BAYESIAN RISK ASSESSMENT: Posterior Outbreak Probability = 0.80
+CSP RESOURCE ALLOCATION : 8 teams deployed across critical sectors.
+STRATEGIC DIRECTIVE:
+ 1. Mobilize immediate barrier larvicide fogging in perimeter zones.
+ 2. Establish temporary hydration wards in designated district clinics.
+ 3. Dispatch community inspection units to eliminate standing water reservoirs.
+ 4. Institute 24/7 symptom monitoring with hospital bed buffer controls.
+
+--- AGENT 2: TACTICAL FIELD OPERATIONS COMMANDER ---
+=== [FIELD OPERATIONS TACTICAL SQUAD DISPATCH: Riverside Slums (D02)] ===
+SQUAD ASSIGNMENT: Unit Alpha-1 & Bravo-2
+EQUIPMENT: Ultra-Low Volume (ULV) cold foggers, Bacillus thuringiensis israelensis (BTI).
+OPERATIONAL CHECKLIST:
+ [x] PPE Gear: Respirators (N95), chemical-resistant gloves, protective eye goggles.
+ [x] Target Coordinates: Storm drains, construction basins, and rooftop water tanks.
+ [x] Chemical Dosage: BTI granules applied at 1g / 1000L water capacity.
+ [x] Resident Safety: Mandatory 30-minute indoor shelter warning prior to aerosolization.
+
+--- AGENT 3: PUBLIC HEALTH ADVISORY COMMUNICATOR ---
+=== [COMMUNITY HEALTH ADVISORY: RIVERSIDE SLUMS] ===
+LEVEL: HIGH RISK EPIDEMIC NOTICE
+Dear Residents of Riverside Slums,
+The Department of Public Health has identified heightened Aedes mosquito activity in your neighborhood.
+
+IMMEDIATE ACTIONS YOU MUST TAKE:
+  1. Empty and scrub all open flowerpot saucers, tires, buckets, and water coolers.
+  2. Apply DEET or Picaridin mosquito repellent during peak biting hours (dawn & dusk).
+  3. Keep window and door mesh screens securely closed.
+
+WARNING SIGNS: High fever, severe retro-orbital eye pain, joint ache, or rash.
+Free diagnostic NS1 testing and ORS packets are available at the Riverside Slums Community Health Center.
+Dengue Hotline: 1800-STOP-DENGUE (24/7 Toll-Free)
+
+ [OK] PASS: Coordinated multi-agent pipeline successfully executed roles.
+======================================================================
+
+##############################################################################
+# [ALL 5 AI COURSE MODULES SUCCESSFULLY DEMONSTRATED FOR MID-EVALUATION]
+##############################################################################
